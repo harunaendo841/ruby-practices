@@ -51,10 +51,7 @@ def parse_options
   options[:year]  ||= Date.today.year
   options[:month] ||= Date.today.month
 
-  unless (1..12).cover?(options[:month])
-    puts 'Error: Month must be between 1 and 12.'
-    exit 1
-  end
+  abort 'Error: Month must be between 1 and 12.' unless (1..12).cover?(options[:month])
 
   options
 end
