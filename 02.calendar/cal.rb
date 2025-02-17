@@ -13,31 +13,15 @@ def print_calendar(year, month)
   puts 'Su Mo Tu We Th Fr Sa'
 
   cells = generate_cells(first_day, last_day)
-  print_week_rows(cells, first_day, last_day)
+  print_week_rows(cells)
 end
 
 def generate_cells(first_day, last_day)
-  cells = Array.new(42, '  ')
-  offset = first_day.wday
-  (1..last_day.day).each do |day|
-    cells[offset] = day.to_s.rjust(2)
-    offset += 1
-  end
-  cells
+  Array.new(first_day.wday, '  ') + (1..last_day.day).map { |day| day.to_s.rjust(2) }
 end
 
-def print_week_rows(cells, first_day, last_day)
-  last_index = first_day.wday + last_day.day - 1
-  week_count = (last_index / 7) + 1
-  week_count.times do |week|
-    start_index = week * 7
-    row = if week == week_count - 1 && last_index % 7 != 6
-            cells[start_index, last_index % 7 + 1]
-          else
-            cells[start_index, 7]
-          end
-    puts row.join(' ')
-  end
+def print_week_rows(cells)
+  cells.each_slice(7) { |week| puts week.join(' ') }
 end
 
 def parse_options
