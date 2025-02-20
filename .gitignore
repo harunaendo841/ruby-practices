@@ -118,3 +118,10 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# 環境変数ファイル
+.env
+
+# .gitkeepファイル
+**/.gitkeep
+
