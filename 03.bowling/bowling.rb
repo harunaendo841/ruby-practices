@@ -47,11 +47,11 @@ def strike?(value)
 end
 
 def spare?(shot_values, index)
-  shot_values.fetch(index, 0) + shot_values.fetch(index + 1, 0) == PINS_PER_FRAME
+  shot_values[index, 2].sum == PINS_PER_FRAME
 end
 
 def strike_bonus(shot_values, index)
-  shot_values.fetch(index + 1, 0) + shot_values.fetch(index + 2, 0)
+  shot_values[index + 1, 2].sum
 end
 
 def spare_bonus(shot_values, index)
