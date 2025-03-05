@@ -5,7 +5,7 @@ MAX_COLUMNS = 3
 COLUMN_PADDING = 2
 
 def validate_directory_path(path)
-  abort("Error: 指定されたパス '#{path}' が存在しません。") unless Dir.exist?(path)
+  abort("Error: 指定されたパス '#{path}' が存在しません。") unless File.exist?(path)
   abort("Error: 指定されたパス '#{path}' はディレクトリではありません。") unless File.directory?(path)
 end
 
