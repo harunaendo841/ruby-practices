@@ -9,8 +9,10 @@ def validate_directory_path(path)
   abort("Error: 指定されたパス '#{path}' はディレクトリではありません。") unless File.directory?(path)
 end
 
-def generate_file_list(path)
-  Dir.entries(path).reject { |f| f.start_with?('.') }.sort
+def generate_file_list(path, show_all)
+  files = Dir.entries(path)
+  files.reject! { |f| f.start_with?('.') } unless show_all
+  files.sort
 end
 
 def format_file_table(file_list, columns)
@@ -42,10 +44,13 @@ def print_file_table(table, column_widths, padding)
 end
 
 def main
-  directory_path = ARGV[0] || '.'
-  validate_directory_path(directory_path)
+  options = ARGV.select { |arg| arg.start_with?('-') }
+  path = (ARGV - options).first || '.'
+  show_all = options.include?('-a')
 
-  file_list = generate_file_list(directory_path)
+  validate_directory_path(path)
+
+  file_list = generate_file_list(path, show_all)
   file_table = format_file_table(file_list, MAX_COLUMNS)
   column_widths = calculate_column_widths(file_table)
   print_file_table(file_table, column_widths, COLUMN_PADDING)
