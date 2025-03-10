@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
+
 MAX_COLUMNS = 3
 COLUMN_PADDING = 2
 
@@ -44,9 +46,13 @@ def print_file_table(table, column_widths, padding)
 end
 
 def main
-  options = ARGV.select { |arg| arg.start_with?('-') }
-  path = (ARGV - options).first || '.'
-  show_all = options.include?('-a')
+  options = {}
+  OptionParser.new do |opts|
+    opts.on("-a", "隠しファイルを表示") { options[:show_all] = true }
+  end.parse!
+
+  path = ARGV.first || '.'
+  show_all = options[:show_all] || false
 
   validate_directory_path(path)
 
