@@ -46,17 +46,16 @@ def print_file_table(table, column_widths, padding)
 end
 
 def main
-  options = {}
+  options = { show_all: false }
   OptionParser.new do |opts|
     opts.on("-a", "隠しファイルを表示") { options[:show_all] = true }
   end.parse!
 
   path = ARGV.first || '.'
-  show_all = options[:show_all] || false
 
   validate_directory_path(path)
 
-  file_list = generate_file_list(path, show_all)
+  file_list = generate_file_list(path, options[:show_all])
   file_table = format_file_table(file_list, MAX_COLUMNS)
   column_widths = calculate_column_widths(file_table)
   print_file_table(file_table, column_widths, COLUMN_PADDING)
