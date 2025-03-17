@@ -11,10 +11,12 @@ def validate_directory_path(path)
   abort("Error: 指定されたパス '#{path}' はディレクトリではありません。") unless File.directory?(path)
 end
 
-def generate_file_list(path, show_all)
+def generate_file_list(path, show_all, reverse)
   files = Dir.entries(path)
   files.reject! { |f| f.start_with?('.') } unless show_all
-  files.sort
+  files.sort!
+  files.reverse! if reverse
+  files
 end
 
 def format_file_table(file_list, columns)
@@ -46,16 +48,17 @@ def print_file_table(table, column_widths, padding)
 end
 
 def main
-  options = { show_all: false }
+  options = { show_all: false, reverse: false }
   OptionParser.new do |opts|
-    opts.on("-a", "隠しファイルを表示") { options[:show_all] = true }
+    opts.on('-a', '隠しファイルを表示') { options[:show_all] = true }
+    opts.on('-r', 'ファイルを逆順で表示') { options[:reverse] = true }
   end.parse!
 
   path = ARGV.first || '.'
 
   validate_directory_path(path)
 
-  file_list = generate_file_list(path, options[:show_all])
+  file_list = generate_file_list(path, options[:show_all], options[:reverse])
   file_table = format_file_table(file_list, MAX_COLUMNS)
   column_widths = calculate_column_widths(file_table)
   print_file_table(file_table, column_widths, COLUMN_PADDING)
