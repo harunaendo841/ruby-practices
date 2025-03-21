@@ -20,11 +20,11 @@ def generate_file_list(path, show_all, reverse)
   files
 end
 
-def file_details(file_name, path)
+def file_details(file_name, path, widths)
   stat = File.lstat(File.join(path, file_name))
 
   format(
-    '%<mode>s %<nlink>2d %-<owner>8s %-<group>8s %<size>6d %<mtime>s %<name>s',
+    "%<mode>s %<nlink>#{widths[:nlink]}d %-<owner>-#{widths[:owner]}s %-<group>-#{widths[:group]}s %<size>#{widths[:size]}d %<mtime>s %<name>s",
     mode: format_mode(stat.mode),
     nlink: stat.nlink,
     owner: Etc.getpwuid(stat.uid).name,
@@ -33,6 +33,16 @@ def file_details(file_name, path)
     mtime: stat.mtime.strftime('%b %d %H:%M'),
     name: file_name
   )
+end
+
+def calculate_field_widths(file_list, path)
+  stats = file_list.map { |f| File.lstat(File.join(path, f)) }
+  {
+    nlink: stats.map(&:nlink).map(&:to_s).map(&:size).max,
+    owner: stats.map { |s| Etc.getpwuid(s.uid).name.size }.max,
+    group: stats.map { |s| Etc.getgrgid(s.gid).name.size }.max,
+    size: stats.map { |s| s.size.to_s.size }.max
+  }
 end
 
 def format_mode(mode)
@@ -93,7 +103,8 @@ def main
   file_list = generate_file_list(path, options[:show_all], options[:reverse])
 
   if options[:detailed_view]
-    puts(file_list.map { |file| file_details(file, path) })
+    widths = calculate_field_widths(file_list, path)
+    puts(file_list.map { |file| file_details(file, path, widths) })
   else
     file_table = format_file_table(file_list, MAX_COLUMNS)
     column_widths = calculate_column_widths(file_table)
