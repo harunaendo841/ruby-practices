@@ -110,12 +110,12 @@ def main
   if options[:detailed_view]
     puts "total #{calculate_total_blocks(file_list, path)}"
     widths = calculate_field_widths(file_list, path)
-    puts file_list.map { |file| file_details(file, path, widths) }
+    puts(file_list.map { |file| file_details(file, path, widths) })
   else
     file_table = format_file_table(file_list, MAX_COLUMNS)
     column_widths = calculate_column_widths(file_table)
     print_file_table(file_table, column_widths, COLUMN_PADDING)
-  end  
+  end
 end
 
 main
