@@ -3,7 +3,6 @@
 
 require 'optparse'
 require 'etc'
-require 'time'
 
 MAX_COLUMNS = 3
 COLUMN_PADDING = 2
