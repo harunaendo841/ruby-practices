@@ -45,6 +45,11 @@ def calculate_field_widths(file_list, path)
   }
 end
 
+def calculate_total_blocks(file_list, path)
+  total_blocks = file_list.sum { |f| File.lstat(File.join(path, f)).blocks }
+  total_blocks / 2
+end
+
 def format_mode(mode)
   type = case mode & 0o170000
          when 0o040000 then 'd'
@@ -103,13 +108,14 @@ def main
   file_list = generate_file_list(path, options[:show_all], options[:reverse])
 
   if options[:detailed_view]
+    puts "total #{calculate_total_blocks(file_list, path)}"
     widths = calculate_field_widths(file_list, path)
-    puts(file_list.map { |file| file_details(file, path, widths) })
+    puts file_list.map { |file| file_details(file, path, widths) }
   else
     file_table = format_file_table(file_list, MAX_COLUMNS)
     column_widths = calculate_column_widths(file_table)
     print_file_table(file_table, column_widths, COLUMN_PADDING)
-  end
+  end  
 end
 
 main
