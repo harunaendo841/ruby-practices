@@ -30,7 +30,7 @@ def file_details(file_name, path, widths)
     owner: Etc.getpwuid(stat.uid).name,
     group: Etc.getgrgid(stat.gid).name,
     size: stat.size,
-    mtime: stat.mtime.strftime('%b %d %H:%M'),
+    mtime: stat.mtime.strftime('%b %e %H:%M'),
     name: file_name
   )
 end
